@@ -1,3 +1,5 @@
+import argparse
+import json
 from pathlib import Path
 
 import numpy as np
@@ -6,75 +8,30 @@ import scanpy as sc
 from scipy import sparse
 
 
-ROOT = Path(__file__).resolve().parents[1]
 
-INPUT = (
-    ROOT
-    / "data"
-    / "processed"
-    / "cellflowx_qc_doublets.h5ad"
-)
+def parse_args():
+    parser = argparse.ArgumentParser()
 
-OUTPUT = (
-    ROOT
-    / "data"
-    / "processed"
-    / "cellflowx_qc.h5ad"
-)
+    parser.add_argument("--input", required=True)
+    parser.add_argument("--thresholds", required=True)
+    parser.add_argument("--output", required=True)
+    parser.add_argument("--flagged-output", required=True)
+    parser.add_argument("--summary", required=True)
+    parser.add_argument("--removals", required=True)
+    parser.add_argument("--doublets", required=True)
 
-FLAGGED_OUTPUT = (
-    ROOT
-    / "data"
-    / "processed"
-    / "cellflowx_qc_flagged.h5ad"
-)
-
-SUMMARY_OUTPUT = (
-    ROOT
-    / "results"
-    / "qc"
-    / "final_qc_summary.csv"
-)
-
-REMOVAL_OUTPUT = (
-    ROOT
-    / "results"
-    / "qc"
-    / "qc_removal_reasons.csv"
-)
-
-DOUBLET_OUTPUT = (
-    ROOT
-    / "results"
-    / "qc"
-    / "doublet_candidates.csv"
-)
-
-
-THRESHOLDS = {
-    "GSM8848584": {
-        "min_genes": 500,
-        "max_genes": 9500,
-        "max_mt": 20,
-    },
-    "GSM8848585": {
-        "min_genes": 500,
-        "max_genes": 9000,
-        "max_mt": 8,
-    },
-    "GSM8848586": {
-        "min_genes": 450,
-        "max_genes": 6500,
-        "max_mt": 8,
-    },
-}
-
+    return parser.parse_args()
 
 def main():
 
-    print(f"Loading: {INPUT}")
+    args = parse_args()
 
-    adata = sc.read_h5ad(INPUT)
+    print(f"Loading: {args.input}")
+
+    adata = sc.read_h5ad(args.input)
+
+    with open(args.thresholds) as handle:
+        THRESHOLDS = json.load(handle)
 
     # --------------------------------------------------
     # Basic validation
@@ -202,7 +159,7 @@ def main():
     ].copy()
 
     doublets.to_csv(
-        DOUBLET_OUTPUT
+        args.doublets
     )
 
     # --------------------------------------------------
@@ -260,7 +217,7 @@ def main():
     summary = pd.DataFrame(records)
 
     summary.to_csv(
-        SUMMARY_OUTPUT,
+        args.summary,
         index=False,
     )
 
@@ -290,7 +247,7 @@ def main():
     removed_obs[
         removal_cols
     ].to_csv(
-        REMOVAL_OUTPUT
+        args.removals
     )
 
     # --------------------------------------------------
@@ -298,7 +255,7 @@ def main():
     # --------------------------------------------------
 
     adata.write_h5ad(
-        FLAGGED_OUTPUT,
+        args.flagged_output,
         compression="gzip",
     )
 
@@ -382,7 +339,7 @@ def main():
     }
 
     filtered.write_h5ad(
-        OUTPUT,
+        args.output,
         compression="gzip",
     )
 
@@ -436,11 +393,11 @@ def main():
     )
 
     print("\nSaved:")
-    print(OUTPUT)
-    print(FLAGGED_OUTPUT)
-    print(SUMMARY_OUTPUT)
-    print(REMOVAL_OUTPUT)
-    print(DOUBLET_OUTPUT)
+    print(args.output)
+    print(args.flagged_output)
+    print(args.summary)
+    print(args.removals)
+    print(args.doublets)
 
 
 if __name__ == "__main__":

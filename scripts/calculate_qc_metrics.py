@@ -1,104 +1,97 @@
+import argparse
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import scanpy as sc
+from scipy import sparse
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+def parse_args():
+    parser = argparse.ArgumentParser()
 
-INPUT_FILE = (
-    PROJECT_ROOT
-    / "data"
-    / "processed"
-    / "cellflowx_raw_merged.h5ad"
-)
+    parser.add_argument("--input", required=True)
+    parser.add_argument("--output", required=True)
+    parser.add_argument("--summary", required=True)
 
-OUTPUT_FILE = (
-    PROJECT_ROOT
-    / "data"
-    / "processed"
-    / "cellflowx_qc_metrics.h5ad"
-)
-
-SUMMARY_FILE = (
-    PROJECT_ROOT
-    / "results"
-    / "qc"
-    / "qc_summary_by_sample.csv"
-)
+    return parser.parse_args()
 
 
 def main():
+    args = parse_args()
 
-    print(f"Loading: {INPUT_FILE}")
+    print(f"Loading: {args.input}")
 
-    adata = sc.read_h5ad(INPUT_FILE)
+    adata = sc.read_h5ad(args.input)
 
-    # --------------------------------
-    # Gene annotations for QC
-    # --------------------------------
+    if adata.X is None:
+        raise ValueError("adata.X is missing")
 
-    symbols = adata.var["gene_symbols"].astype(str)
+    if not sparse.issparse(adata.X):
+        raise ValueError("Expected sparse matrix")
 
-    adata.var["mt"] = symbols.str.upper().str.startswith("MT-")
-    adata.var["ribo"] = symbols.str.upper().str.startswith(
-        ("RPS", "RPL")
+    X = adata.X.tocsr()
+
+    symbols = (
+        adata.var["gene_symbols"]
+        .astype(str)
+        .str.strip()
+        .str.upper()
     )
+
+    mt_mask = symbols.str.startswith("MT-").to_numpy()
 
     print("\nQC gene sets:")
-    print(f"Mitochondrial genes: {adata.var['mt'].sum()}")
-    print(f"Ribosomal genes: {adata.var['ribo'].sum()}")
+    print(f"Mitochondrial genes: {mt_mask.sum()}")
+    print(f"RPL genes: {symbols.str.startswith('RPL').sum()}")
+    print(f"RPS genes: {symbols.str.startswith('RPS').sum()}")
 
-    # --------------------------------
-    # Calculate QC metrics
-    # --------------------------------
+    total_counts = np.asarray(
+        X.sum(axis=1)
+    ).ravel()
 
-    sc.pp.calculate_qc_metrics(
-        adata,
-        qc_vars=["mt", "ribo"],
-        percent_top=None,
-        log1p=False,
-        inplace=True,
-    )
+    n_genes = np.diff(X.indptr)
 
-    # --------------------------------
-    # Sanity checks
-    # --------------------------------
+    mt_counts = np.asarray(
+        X[:, mt_mask].sum(axis=1)
+    ).ravel()
 
-    required_metrics = [
+    pct_mt = np.divide(
+        mt_counts,
+        total_counts,
+        out=np.zeros_like(mt_counts, dtype=float),
+        where=total_counts > 0,
+    ) * 100
+
+    adata.obs["total_counts"] = total_counts
+    adata.obs["n_genes_by_counts"] = n_genes
+    adata.obs["total_counts_mt"] = mt_counts
+    adata.obs["pct_counts_mt"] = pct_mt
+
+    metrics = [
         "total_counts",
         "n_genes_by_counts",
         "pct_counts_mt",
-        "pct_counts_ribo",
     ]
 
-    for metric in required_metrics:
-        if metric not in adata.obs.columns:
-            raise ValueError(f"Missing QC metric: {metric}")
-
     print("\n=== GLOBAL QC SUMMARY ===")
-
     print(
-        adata.obs[
-            required_metrics
-        ].describe().round(2)
+        adata.obs[metrics]
+        .describe()
+        .round(2)
     )
-
-    # --------------------------------
-    # Per-sample summary
-    # --------------------------------
 
     summary = (
         adata.obs
-        .groupby("geo_accession", observed=True)
+        .groupby(
+            "geo_accession",
+            observed=True,
+        )
         .agg(
             cells=("geo_accession", "size"),
-
             median_counts=("total_counts", "median"),
             median_genes=("n_genes_by_counts", "median"),
-
             median_pct_mt=("pct_counts_mt", "median"),
-            median_pct_ribo=("pct_counts_ribo", "median"),
         )
         .round(2)
     )
@@ -106,22 +99,39 @@ def main():
     print("\n=== QC BY SAMPLE ===")
     print(summary)
 
-    # --------------------------------
-    # Save
-    # --------------------------------
+    output = Path(args.output)
+    summary_path = Path(args.summary)
 
-    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    SUMMARY_FILE.parent.mkdir(parents=True, exist_ok=True)
+    output.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
-    summary.to_csv(SUMMARY_FILE)
+    summary_path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    summary.to_csv(summary_path)
+
+    adata.uns["qc_notes"] = {
+        "mitochondrial_genes_detected":
+            int(mt_mask.sum()),
+
+        "ribosomal_qc_available":
+            False,
+
+        "ribosomal_qc_reason":
+            "Canonical RPL/RPS genes absent from supplied matrix",
+    }
 
     adata.write_h5ad(
-        OUTPUT_FILE,
+        output,
         compression="gzip",
     )
 
-    print(f"\nSaved AnnData: {OUTPUT_FILE}")
-    print(f"Saved summary: {SUMMARY_FILE}")
+    print(f"\nSaved AnnData: {output.resolve()}")
+    print(f"Saved summary: {summary_path.resolve()}")
 
 
 if __name__ == "__main__":

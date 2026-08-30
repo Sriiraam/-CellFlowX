@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 
 import anndata as ad
@@ -6,70 +7,69 @@ import scanpy as sc
 from scipy import sparse
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+def parse_args():
+    parser = argparse.ArgumentParser()
 
-INPUT_ROOT = PROJECT_ROOT / "data" / "raw" / "extracted"
-OUTPUT_FILE = (
-    PROJECT_ROOT
-    / "data"
-    / "processed"
-    / "cellflowx_raw_merged.h5ad"
-)
+    parser.add_argument(
+        "--input-root",
+        required=True,
+    )
 
+    parser.add_argument(
+        "--samplesheet",
+        required=True,
+    )
 
-SAMPLES = {
-    "GSM8848584": {
-        "sample_id": "MH_07-042-M2",
-        "expected_cells": 3713,
-    },
-    "GSM8848585": {
-        "sample_id": "MH_13-084-D12",
-        "expected_cells": 3988,
-    },
-    "GSM8848586": {
-        "sample_id": "MH_13-084-D13",
-        "expected_cells": 959,
-    },
-}
+    parser.add_argument(
+        "--output",
+        required=True,
+    )
 
-EXPECTED_GENES = 18082
+    return parser.parse_args()
 
 
 def main():
+    args = parse_args()
+
+    input_root = Path(args.input_root)
+    samplesheet = pd.read_csv(args.samplesheet)
+    output = Path(args.output)
 
     matrices = []
     obs_tables = []
     reference_var = None
-    reference_genes = None
 
-    for geo, metadata in SAMPLES.items():
+    for _, row in samplesheet.iterrows():
+
+        geo = row["geo_accession"]
 
         print(f"\nLoading {geo}...")
 
+        sample_dir = input_root / geo
+
         adata = sc.read_10x_mtx(
-            INPUT_ROOT / geo,
+            sample_dir,
             var_names="gene_ids",
             make_unique=False,
-            cache=False,
         )
 
-        assert adata.n_obs == metadata["expected_cells"]
-        assert adata.n_vars == EXPECTED_GENES
-        assert adata.var_names.is_unique
-        assert adata.X is not None
-        assert sparse.issparse(adata.X)
+        print(
+            f"{geo}: "
+            f"{adata.n_obs:,} cells × "
+            f"{adata.n_vars:,} genes"
+        )
 
-        # Verify identical gene ordering across samples
-        if reference_genes is None:
-            reference_genes = adata.var_names.copy()
+        if reference_var is None:
             reference_var = adata.var.copy()
+
         else:
-            if not adata.var_names.equals(reference_genes):
+            if not adata.var_names.equals(
+                reference_var.index
+            ):
                 raise ValueError(
-                    f"{geo}: gene order does not match reference sample"
+                    f"Gene ordering differs for {geo}"
                 )
 
-        # Globally unique cell IDs
         adata.obs_names = [
             f"{geo}_{barcode}"
             for barcode in adata.obs_names
@@ -80,17 +80,15 @@ def main():
         )
 
         obs["geo_accession"] = geo
-        obs["sample_id"] = metadata["sample_id"]
-        obs["condition"] = "metastatic_prostate_cancer"
-        obs["tissue"] = "tumor_tissue"
+        obs["sample_id"] = row["sample_id"]
+        obs["condition"] = row["condition"]
+        obs["tissue"] = row["tissue"]
 
-        matrices.append(adata.X.tocsr())
-        obs_tables.append(obs)
-
-        print(
-            f"{geo}: "
-            f"{adata.n_obs:,} cells × {adata.n_vars:,} genes"
+        matrices.append(
+            adata.X.tocsr()
         )
+
+        obs_tables.append(obs)
 
     print("\nCombining sparse matrices...")
 
@@ -100,8 +98,7 @@ def main():
     )
 
     combined_obs = pd.concat(
-        obs_tables,
-        axis=0,
+        obs_tables
     )
 
     merged = ad.AnnData(
@@ -110,30 +107,54 @@ def main():
         var=reference_var.copy(),
     )
 
-    # Final validation
-    assert merged.shape == (8660, 18082)
-    assert merged.X is not None
-    assert sparse.issparse(merged.X)
-    assert merged.obs_names.is_unique
-    assert merged.var_names.is_unique
+    if merged.X is None:
+        raise ValueError(
+            "Merged X is missing"
+        )
 
-    merged.uns["project"] = "CellFlowX"
-    merged.uns["dataset"] = "GSE292074"
-    merged.uns["bioproject"] = "PRJNA1236646"
-    merged.uns["input_type"] = (
-        "processed_10x_filtered_feature_bc_matrix"
+    if not sparse.issparse(
+        merged.X
+    ):
+        raise ValueError(
+            "Merged matrix is not sparse"
+        )
+
+    if not merged.obs_names.is_unique:
+        raise ValueError(
+            "Cell IDs are not unique"
+        )
+
+    if not merged.var_names.is_unique:
+        raise ValueError(
+            "Gene IDs are not unique"
+        )
+
+    output.parent.mkdir(
+        parents=True,
+        exist_ok=True,
     )
 
-    print("\nFinal shape:", merged.shape)
-    print("X type:", type(merged.X))
-    print("Layers:", list(merged.layers.keys()))
-
     merged.write_h5ad(
-        OUTPUT_FILE,
+        output,
         compression="gzip",
     )
 
-    print(f"\nSaved: {OUTPUT_FILE}")
+    print(
+        f"\nFinal shape: {merged.shape}"
+    )
+
+    print(
+        f"X type: {type(merged.X)}"
+    )
+
+    print(
+        f"Layers: "
+        f"{list(merged.layers.keys())}"
+    )
+
+    print(
+        f"Saved: {output.resolve()}"
+    )
 
 
 if __name__ == "__main__":

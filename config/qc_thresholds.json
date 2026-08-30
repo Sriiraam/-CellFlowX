@@ -1,0 +1,17 @@
+{
+  "GSM8848584": {
+    "min_genes": 500,
+    "max_genes": 9500,
+    "max_mt": 20
+  },
+  "GSM8848585": {
+    "min_genes": 500,
+    "max_genes": 9000,
+    "max_mt": 8
+  },
+  "GSM8848586": {
+    "min_genes": 450,
+    "max_genes": 6500,
+    "max_mt": 8
+  }
+}

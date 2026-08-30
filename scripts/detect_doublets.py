@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 
 import numpy as np
@@ -6,28 +7,18 @@ import scanpy as sc
 import scrublet as scr
 
 
-ROOT = Path(__file__).resolve().parents[1]
-
-INPUT = ROOT / "data" / "processed" / "cellflowx_qc_metrics.h5ad"
-
-OUTPUT = (
-    ROOT
-    / "data"
-    / "processed"
-    / "cellflowx_qc_doublets.h5ad"
-)
-
-SUMMARY = (
-    ROOT
-    / "results"
-    / "qc"
-    / "doublet_summary.csv"
-)
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", required=True)
+    parser.add_argument("--output", required=True)
+    parser.add_argument("--summary", required=True)
+    return parser.parse_args()
 
 
 def main():
+    args = parse_args()
 
-    adata = sc.read_h5ad(INPUT)
+    adata = sc.read_h5ad(args.input)
 
     adata.obs["doublet_score"] = np.nan
     adata.obs["predicted_doublet"] = False
@@ -79,10 +70,8 @@ def main():
             "sample": sample,
             "cells": n_cells,
             "predicted_doublets": n_doublets,
-            "predicted_doublet_pct": round(
-                n_doublets / n_cells * 100,
-                2,
-            ),
+            "predicted_doublet_pct":
+                round(n_doublets / n_cells * 100, 2),
             "scrublet_threshold": scrub.threshold_,
         })
 
@@ -91,23 +80,31 @@ def main():
     print("\n=== DOUBLET SUMMARY ===")
     print(summary.to_string(index=False))
 
-    SUMMARY.parent.mkdir(
+    output = Path(args.output)
+    summary_path = Path(args.summary)
+
+    output.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    summary_path.parent.mkdir(
         parents=True,
         exist_ok=True,
     )
 
     summary.to_csv(
-        SUMMARY,
+        summary_path,
         index=False,
     )
 
     adata.write_h5ad(
-        OUTPUT,
+        output,
         compression="gzip",
     )
 
-    print(f"\nSaved: {OUTPUT}")
-    print(f"Saved: {SUMMARY}")
+    print(f"\nSaved: {output.resolve()}")
+    print(f"Saved: {summary_path.resolve()}")
 
 
 if __name__ == "__main__":

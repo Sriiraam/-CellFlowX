@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 
 import numpy as np
@@ -5,28 +6,19 @@ import scanpy as sc
 from scipy import sparse
 
 
-ROOT = Path(__file__).resolve().parents[1]
-
-INPUT = (
-    ROOT
-    / "data"
-    / "processed"
-    / "cellflowx_qc.h5ad"
-)
-
-OUTPUT = (
-    ROOT
-    / "data"
-    / "processed"
-    / "cellflowx_preprocessed.h5ad"
-)
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", required=True)
+    parser.add_argument("--output", required=True)
+    return parser.parse_args()
 
 
 def main():
+    args = parse_args()
 
-    print(f"Loading: {INPUT}")
+    print(f"Loading: {args.input}")
 
-    adata = sc.read_h5ad(INPUT)
+    adata = sc.read_h5ad(args.input)
 
     if adata.X is None:
         raise ValueError("adata.X is missing")
@@ -39,17 +31,10 @@ def main():
         f"{adata.n_vars:,} genes"
     )
 
-    # --------------------------------------------------
-    # Preserve original raw counts
-    # --------------------------------------------------
-
+    # Preserve raw counts
     adata.layers["counts"] = adata.X.copy()
 
-    # --------------------------------------------------
     # Gene filtering
-    # Require expression in at least 3 cells
-    # --------------------------------------------------
-
     sc.pp.filter_genes(
         adata,
         min_cells=3,
@@ -61,28 +46,16 @@ def main():
         f"{adata.n_vars:,} genes"
     )
 
-    # --------------------------------------------------
-    # Library-size normalization
-    # --------------------------------------------------
-
+    # Normalize
     sc.pp.normalize_total(
         adata,
         target_sum=1e4,
     )
 
-    # --------------------------------------------------
-    # Log transformation
-    # --------------------------------------------------
-
+    # Log transform
     sc.pp.log1p(adata)
 
-    # --------------------------------------------------
-    # Highly variable genes
-    #
-    # Seurat flavor works on log-normalized data
-    # and avoids needing scikit-misc.
-    # --------------------------------------------------
-
+    # HVGs
     sc.pp.highly_variable_genes(
         adata,
         n_top_genes=2000,
@@ -95,14 +68,9 @@ def main():
         adata.var["highly_variable"].sum()
     )
 
-    print(
-        f"Highly variable genes: {n_hvg:,}"
-    )
+    print(f"Highly variable genes: {n_hvg:,}")
 
-    # --------------------------------------------------
     # Validation
-    # --------------------------------------------------
-
     if "counts" not in adata.layers:
         raise ValueError("Raw counts layer missing")
 
@@ -121,57 +89,45 @@ def main():
             "Counts layer is not integer-valued"
         )
 
-    if "highly_variable" not in adata.var.columns:
-        raise ValueError(
-            "HVG annotation missing"
-        )
-
     if n_hvg == 0:
         raise ValueError(
             "No HVGs were identified"
         )
 
-    # --------------------------------------------------
-    # Save preprocessing metadata
-    # --------------------------------------------------
-
     adata.uns["preprocessing"] = {
         "gene_filter": "min_cells=3",
-        "normalization": "normalize_total target_sum=10000",
+        "normalization":
+            "normalize_total target_sum=10000",
         "transformation": "log1p",
         "hvg_method": "seurat",
         "hvg_n_top_genes": 2000,
         "hvg_batch_key": "geo_accession",
-        "raw_counts_preserved": "layers['counts']",
+        "raw_counts_preserved":
+            "layers['counts']",
     }
 
-    # --------------------------------------------------
-    # Save
-    # --------------------------------------------------
+    output = Path(args.output)
+
+    output.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
     adata.write_h5ad(
-        OUTPUT,
+        output,
         compression="gzip",
     )
 
     print("\n=== PREPROCESSING COMPLETE ===")
-    print(
-        f"Cells:              {adata.n_obs:,}"
-    )
-    print(
-        f"Genes:              {adata.n_vars:,}"
-    )
-    print(
-        f"HVGs:               {n_hvg:,}"
-    )
+    print(f"Cells: {adata.n_obs:,}")
+    print(f"Genes: {adata.n_vars:,}")
+    print(f"HVGs: {n_hvg:,}")
     print(
         f"Counts layer sparse: "
         f"{sparse.issparse(adata.layers['counts'])}"
     )
-    print(
-        "Raw counts integer: True"
-    )
-    print(f"\nSaved: {OUTPUT}")
+    print("Raw counts integer: True")
+    print(f"\nSaved: {output.resolve()}")
 
 
 if __name__ == "__main__":
