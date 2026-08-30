@@ -14,6 +14,7 @@ include { TUMOR_HETEROGENEITY } from './workflow/modules/tumor_heterogeneity'
 include { CNV_MALIGNANCY } from './workflow/modules/cnv_malignancy'
 include { TUMOR_STATE_DE } from './workflow/modules/tumor_state_de'
 include { FUNCTIONAL_ENRICHMENT } from './workflow/modules/functional_enrichment'
+include { BIOLOGICAL_SYNTHESIS } from './workflow/modules/biological_synthesis'
 
 workflow {
 
@@ -95,5 +96,16 @@ workflow {
 
     FUNCTIONAL_ENRICHMENT(
         TUMOR_STATE_DE.out.results
+    )
+
+    BIOLOGICAL_SYNTHESIS(
+        TUMOR_HETEROGENEITY.out.summary
+            .mix(TUMOR_HETEROGENEITY.out.percentages)
+            .collect(),
+
+        CNV_MALIGNANCY.out.summary
+            .collect(),
+
+        FUNCTIONAL_ENRICHMENT.out.results
     )
 }
