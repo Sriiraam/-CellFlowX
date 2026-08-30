@@ -1,4 +1,4 @@
-sample_id,geo_accession,sra_run,condition,tissue,organism,assay,input_type
-MH_07-042-M2,GSM8848584,SRR32708522,metastatic_prostate_cancer,tumor_tissue,Homo_sapiens,scRNA-seq,10x_filtered_matrix
-MH_13-084-D12,GSM8848585,SRR32708521,metastatic_prostate_cancer,tumor_tissue,Homo_sapiens,scRNA-seq,10x_filtered_matrix
-MH_13-084-D13,GSM8848586,SRR32708520,metastatic_prostate_cancer,tumor_tissue,Homo_sapiens,scRNA-seq,10x_filtered_matrix
+sample_id,geo_accession,sra_run,condition,tissue,organism,assay,input_type,n_cells,n_genes
+MH_07-042-M2,GSM8848584,SRR32708522,metastatic_prostate_cancer,tumor_tissue,Homo_sapiens,scRNA-seq,10x_filtered_matrix,3713,18082
+MH_13-084-D12,GSM8848585,SRR32708521,metastatic_prostate_cancer,tumor_tissue,Homo_sapiens,scRNA-seq,10x_filtered_matrix,3988,18082
+MH_13-084-D13,GSM8848586,SRR32708520,metastatic_prostate_cancer,tumor_tissue,Homo_sapiens,scRNA-seq,10x_filtered_matrix,959,18082
