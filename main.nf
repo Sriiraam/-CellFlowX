@@ -21,6 +21,9 @@ include { ANNOTATE_CELLS } from './workflow/modules/annotate_cells'
 
 include { TUMOR_HETEROGENEITY } from './workflow/modules/tumor_heterogeneity'
 
+
+include { CNV_MALIGNANCY } from './workflow/modules/cnv_malignancy'
+
 workflow {
 
     input_root = file(
@@ -90,6 +93,10 @@ workflow {
     )
 
     TUMOR_HETEROGENEITY(
+        ANNOTATE_CELLS.out.annotated
+    )
+
+    CNV_MALIGNANCY(
         ANNOTATE_CELLS.out.annotated
     )
 }
