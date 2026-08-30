@@ -18,6 +18,9 @@ include { MARKER_DISCOVERY } from './workflow/modules/marker_discovery'
 
 include { ANNOTATE_CELLS } from './workflow/modules/annotate_cells'
 
+
+include { TUMOR_HETEROGENEITY } from './workflow/modules/tumor_heterogeneity'
+
 workflow {
 
     input_root = file(
@@ -84,5 +87,9 @@ workflow {
     ANNOTATE_CELLS(
         EMBEDDING_CLUSTERING.out.embedding,
         annotation_file
+    )
+
+    TUMOR_HETEROGENEITY(
+        ANNOTATE_CELLS.out.annotated
     )
 }
