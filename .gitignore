@@ -1,0 +1,93 @@
+# ============================================================
+# CellFlowX - Git Ignore
+# ============================================================
+
+# ----------------------------
+# Raw / downloaded data
+# ----------------------------
+data/raw/*
+!data/raw/.gitkeep
+
+# ----------------------------
+# Generated results
+# ----------------------------
+results/*
+!results/.gitkeep
+
+# ----------------------------
+# Single-cell objects
+# ----------------------------
+*.h5ad
+*.h5
+*.loom
+*.rds
+
+# ----------------------------
+# 10x Genomics matrices
+# ----------------------------
+matrix.mtx
+matrix.mtx.gz
+barcodes.tsv
+barcodes.tsv.gz
+features.tsv
+features.tsv.gz
+
+# ----------------------------
+# Archives / sequencing files
+# ----------------------------
+*.tar
+*.tar.gz
+*.zip
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.bam
+*.sam
+*.cram
+
+# ----------------------------
+# Python
+# ----------------------------
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# ----------------------------
+# Environments
+# ----------------------------
+.venv/
+venv/
+env/
+.conda/
+
+# ----------------------------
+# Nextflow
+# ----------------------------
+.nextflow/
+.nextflow.log*
+work/
+
+# ----------------------------
+# Streamlit
+# ----------------------------
+.streamlit/secrets.toml
+
+# ----------------------------
+# IDE / OS
+# ----------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ----------------------------
+# Temporary files
+# ----------------------------
+*.tmp
+*.temp
+*.log
+# CellFlowX processed data
+data/processed/*
+!data/processed/.gitkeep
