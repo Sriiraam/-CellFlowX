@@ -1,28 +1,19 @@
 nextflow.enable.dsl=2
 
-include { BUILD_ANNDATA }    from './workflow/modules/build_anndata'
-include { QC_METRICS }       from './workflow/modules/qc_metrics'
-include { QC_PLOTS }         from './workflow/modules/qc_plots'
-include { EVALUATE_QC }      from './workflow/modules/evaluate_qc'
-include { DETECT_DOUBLETS }  from './workflow/modules/detect_doublets'
-include { FINALIZE_QC }      from './workflow/modules/finalize_qc'
-include { PREPROCESS }       from './workflow/modules/preprocess'
-
-
-
+include { BUILD_ANNDATA } from './workflow/modules/build_anndata'
+include { QC_METRICS } from './workflow/modules/qc_metrics'
+include { QC_PLOTS } from './workflow/modules/qc_plots'
+include { EVALUATE_QC } from './workflow/modules/evaluate_qc'
+include { DETECT_DOUBLETS } from './workflow/modules/detect_doublets'
+include { FINALIZE_QC } from './workflow/modules/finalize_qc'
+include { PREPROCESS } from './workflow/modules/preprocess'
 include { EMBEDDING_CLUSTERING } from './workflow/modules/embedding_clustering'
-
-
 include { MARKER_DISCOVERY } from './workflow/modules/marker_discovery'
-
-
 include { ANNOTATE_CELLS } from './workflow/modules/annotate_cells'
-
-
 include { TUMOR_HETEROGENEITY } from './workflow/modules/tumor_heterogeneity'
-
-
 include { CNV_MALIGNANCY } from './workflow/modules/cnv_malignancy'
+include { TUMOR_STATE_DE } from './workflow/modules/tumor_state_de'
+include { FUNCTIONAL_ENRICHMENT } from './workflow/modules/functional_enrichment'
 
 workflow {
 
@@ -50,9 +41,6 @@ workflow {
         BUILD_ANNDATA.out.h5ad
     )
 
-    /*
-     * Independent QC branches
-     */
     QC_PLOTS(
         QC_METRICS.out.h5ad
     )
@@ -84,7 +72,8 @@ workflow {
     )
 
     annotation_file = file(
-        "${projectDir}/config/celltype_annotations.json"
+        "${projectDir}/config/celltype_annotations.json",
+        checkIfExists: true
     )
 
     ANNOTATE_CELLS(
@@ -98,5 +87,13 @@ workflow {
 
     CNV_MALIGNANCY(
         ANNOTATE_CELLS.out.annotated
+    )
+
+    TUMOR_STATE_DE(
+        CNV_MALIGNANCY.out.h5ad
+    )
+
+    FUNCTIONAL_ENRICHMENT(
+        TUMOR_STATE_DE.out.results
     )
 }
