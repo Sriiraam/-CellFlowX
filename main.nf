@@ -12,6 +12,12 @@ include { PREPROCESS }       from './workflow/modules/preprocess'
 
 include { EMBEDDING_CLUSTERING } from './workflow/modules/embedding_clustering'
 
+
+include { MARKER_DISCOVERY } from './workflow/modules/marker_discovery'
+
+
+include { ANNOTATE_CELLS } from './workflow/modules/annotate_cells'
+
 workflow {
 
     input_root = file(
@@ -65,5 +71,18 @@ workflow {
 
     EMBEDDING_CLUSTERING(
         PREPROCESS.out
+    )
+
+    MARKER_DISCOVERY(
+        EMBEDDING_CLUSTERING.out.embedding
+    )
+
+    annotation_file = file(
+        "${projectDir}/config/celltype_annotations.json"
+    )
+
+    ANNOTATE_CELLS(
+        EMBEDDING_CLUSTERING.out.embedding,
+        annotation_file
     )
 }
