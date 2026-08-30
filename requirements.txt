@@ -12,6 +12,7 @@ fonttools==4.63.0
 formulaic==1.2.2
 google-crc32c==1.8.0
 h5py==3.16.0
+igraph==1.0.0
 ImageIO==2.37.4
 iniconfig==2.3.0
 interface_meta==2.0.1
@@ -19,6 +20,7 @@ joblib==1.5.3
 kiwisolver==1.5.1
 lazy-loader==0.5
 legacy-api-wrap==1.5
+leidenalg==0.12.0
 llvmlite==0.49.0
 matplotlib==3.11.1
 narwhals==2.25.0
@@ -53,6 +55,7 @@ session-info2==0.4.2
 setuptools==84.0.0
 six==1.17.0
 statsmodels==0.15.0
+texttable==1.7.0
 threadpoolctl==3.6.0
 tifffile==2026.8.23
 tqdm==4.70.0

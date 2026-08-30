@@ -9,6 +9,9 @@ include { FINALIZE_QC }      from './workflow/modules/finalize_qc'
 include { PREPROCESS }       from './workflow/modules/preprocess'
 
 
+
+include { EMBEDDING_CLUSTERING } from './workflow/modules/embedding_clustering'
+
 workflow {
 
     input_root = file(
@@ -58,5 +61,9 @@ workflow {
 
     PREPROCESS(
         FINALIZE_QC.out.h5ad
+    )
+
+    EMBEDDING_CLUSTERING(
+        PREPROCESS.out
     )
 }
