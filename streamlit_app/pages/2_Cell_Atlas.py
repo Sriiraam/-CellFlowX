@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from utils.styles import apply_global_style, metric_card
-from utils.paths import ANNOTATED_H5AD, ANNOTATION_DIR
+from utils.paths import PROJECT_ROOT, ANNOTATION_DIR
 from utils.loaders import load_csv, load_h5ad
 
 
@@ -39,19 +39,11 @@ cluster structure and marker programs across metastatic prostate cancer.
 )
 
 
-adata = load_h5ad(ANNOTATED_H5AD)
+ATLAS_CSV = PROJECT_ROOT / "streamlit_app/data/cell_atlas.csv"
+obs = load_csv(ATLAS_CSV)
 
-obs = adata.obs.copy().reset_index()
-
-umap_df = pd.DataFrame(
-    adata.obsm["X_umap"],
-    columns=["UMAP1", "UMAP2"]
-)
-
-plot_df = pd.concat(
-    [obs.reset_index(drop=True), umap_df],
-    axis=1
-)
+# UMAP coordinates already included in deployment CSV
+plot_df = obs.copy()
 
 
 def find_col(df, candidates):

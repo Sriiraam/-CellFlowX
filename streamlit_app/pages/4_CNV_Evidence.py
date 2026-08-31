@@ -4,7 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from utils.styles import apply_global_style, metric_card
-from utils.paths import CNV_DIR, CNV_H5AD
+from utils.paths import PROJECT_ROOT, CNV_DIR
 from utils.loaders import load_csv, load_h5ad
 
 
@@ -46,7 +46,8 @@ for tumor-associated cellular states across metastatic prostate cancer.
 # LOAD
 # --------------------------------------------------
 
-adata = load_h5ad(CNV_H5AD)
+CNV_CELLS_CSV = PROJECT_ROOT / "streamlit_app/data/cnv_cells.csv"
+obs = load_csv(CNV_CELLS_CSV)
 
 scores = load_csv(
     CNV_DIR / "cnv_cell_scores.csv"
@@ -56,18 +57,8 @@ summary = load_csv(
     CNV_DIR / "cnv_summary.csv"
 )
 
-obs = adata.obs.copy().reset_index()
-
-if "X_umap" in adata.obsm:
-    umap = pd.DataFrame(
-        adata.obsm["X_umap"],
-        columns=["UMAP1", "UMAP2"]
-    )
-    obs = pd.concat(
-        [obs.reset_index(drop=True), umap],
-        axis=1
-    )
-
+# obs already loaded from deployment CSV
+# UMAP coordinates already present in deployment CSV
 
 def find_col(df, candidates):
     for c in candidates:

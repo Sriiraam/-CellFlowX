@@ -25,9 +25,9 @@ apply_global_style()
 # PATHS
 # --------------------------------------------------
 
-RAW_H5AD = PROJECT_ROOT / "data/processed/cellflowx_raw_merged.h5ad"
-QC_METRICS_H5AD = PROJECT_ROOT / "data/processed/cellflowx_qc_metrics.h5ad"
-FINAL_QC_H5AD = PROJECT_ROOT / "data/processed/cellflowx_qc.h5ad"
+DEPLOY_DATA = PROJECT_ROOT / "streamlit_app/data"
+QC_METRICS_CSV = DEPLOY_DATA / "qc_cell_metrics.csv"
+QC_COUNTS_CSV = DEPLOY_DATA / "qc_counts.csv"
 
 
 # --------------------------------------------------
@@ -53,14 +53,11 @@ mitochondrial RNA content, sample-specific filtering and doublet removal.
 # LOAD DATA
 # --------------------------------------------------
 
-raw = load_h5ad(RAW_H5AD)
-qc_metrics = load_h5ad(QC_METRICS_H5AD)
-final = load_h5ad(FINAL_QC_H5AD)
+obs = load_csv(QC_METRICS_CSV)
+qc_counts = load_csv(QC_COUNTS_CSV)
 
-obs = qc_metrics.obs.copy().reset_index(drop=False)
-
-raw_cells = raw.n_obs
-retained_cells = final.n_obs
+raw_cells = int(qc_counts.loc[0, "raw_cells"])
+retained_cells = int(qc_counts.loc[0, "retained_cells"])
 removed_cells = raw_cells - retained_cells
 retention = retained_cells / raw_cells * 100
 
