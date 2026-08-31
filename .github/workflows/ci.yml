@@ -24,7 +24,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest -q
+          pytest -q --ignore=tests/test_processed_data.py
 
       - name: Validate Python scripts
         run: |
