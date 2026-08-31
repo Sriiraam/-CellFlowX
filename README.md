@@ -117,6 +117,7 @@ Functional Enrichment
         │
         ▼
 Biological Synthesis
+```
 
 The complete analysis is orchestrated as a 15-process Nextflow DSL2 workflow.
 
