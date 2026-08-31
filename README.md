@@ -13,6 +13,11 @@ It combines single-cell biology with workflow engineering using **Scanpy, AnnDat
 
 ---
 
+
+## 🧬 Workflow Architecture
+
+![CellFlowX Workflow Architecture](docs/cellflowx_architecture.png)
+
 ## 🌐 Live Demo
 
 Explore CellFlowX directly in your browser — no local installation required.
