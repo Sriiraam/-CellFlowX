@@ -13,6 +13,11 @@ It combines single-cell biology with workflow engineering using **Scanpy, AnnDat
 
 ---
 
+## 🌐 Live Demo
+
+Explore CellFlowX directly in your browser — no local installation required.
+
+**[Launch the CellFlowX Dashboard →](https://cellflowx.streamlit.app/)**
 ## 🎯 Project Objective
 
 CellFlowX investigates:
