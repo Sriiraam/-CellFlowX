@@ -1,0 +1,13 @@
+.git
+.github
+.venv
+.nextflow
+work
+data
+results
+database/*.db
+logs
+__pycache__
+*.pyc
+.pytest_cache
+.streamlit

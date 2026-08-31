@@ -22,7 +22,7 @@ process BIOLOGICAL_SYNTHESIS {
     cp ${cnv_files} cnv_input/
     cp ${enrichment_files} enrichment_input/
 
-    python ${projectDir}/scripts/biological_synthesis.py \
+    python ${params.scripts_dir}/biological_synthesis.py \
         --heterogeneity-dir heterogeneity_input \
         --cnv-dir cnv_input \
         --enrichment-dir enrichment_input \

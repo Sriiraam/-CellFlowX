@@ -44,7 +44,7 @@ process EMBEDDING_CLUSTERING {
 
     script:
     """
-    python ${projectDir}/scripts/embedding_clustering.py \
+    python ${params.scripts_dir}/embedding_clustering.py \
         --input "${input_h5ad}" \
         --output "cellflowx_embedding.h5ad" \
         --pca-variance "pca_variance.csv" \

@@ -16,7 +16,7 @@ process QC_PLOTS {
     """
     mkdir -p qc_plots
 
-    python ${projectDir}/scripts/plot_qc_distributions.py \
+    python ${params.scripts_dir}/plot_qc_distributions.py \
         --input ${input_h5ad} \
         --outdir qc_plots
     """

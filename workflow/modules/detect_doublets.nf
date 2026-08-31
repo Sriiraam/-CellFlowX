@@ -21,7 +21,7 @@ process DETECT_DOUBLETS {
 
     script:
     """
-    python ${projectDir}/scripts/detect_doublets.py \
+    python ${params.scripts_dir}/detect_doublets.py \
         --input ${input_h5ad} \
         --output cellflowx_qc_doublets.h5ad \
         --summary doublet_summary.csv

@@ -29,7 +29,7 @@ process CNV_MALIGNANCY {
 
     script:
     """
-    python ${projectDir}/scripts/cnv_malignancy.py \
+    python ${params.scripts_dir}/cnv_malignancy.py \
         --input "${input_h5ad}" \
         --output "cellflowx_cnv.h5ad" \
         --cell-scores "cnv_cell_scores.csv" \

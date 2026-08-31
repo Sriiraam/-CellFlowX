@@ -15,7 +15,7 @@ process EVALUATE_QC {
 
     script:
     """
-    python ${projectDir}/scripts/evaluate_qc_thresholds.py \
+    python ${params.scripts_dir}/evaluate_qc_thresholds.py \
         --input "${input_h5ad}" \
         --thresholds "${thresholds}" \
         --output "qc_threshold_evaluation.csv"

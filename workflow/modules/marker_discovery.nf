@@ -16,7 +16,7 @@ process MARKER_DISCOVERY {
 
     script:
     """
-    python ${projectDir}/scripts/marker_discovery.py \
+    python ${params.scripts_dir}/marker_discovery.py \
         --input "${input_h5ad}" \
         --markers "cluster_markers.csv" \
         --top-markers "top_cluster_markers.csv" \

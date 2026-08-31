@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -7,10 +8,9 @@ import scanpy as sc
 
 ROOT = Path(__file__).resolve().parents[1]
 
-INPUT = ROOT / "data" / "processed" / "cellflowx_qc_metrics.h5ad"
-OUTDIR = ROOT / "results" / "qc"
 
-OUTDIR.mkdir(parents=True, exist_ok=True)
+
+
 
 
 def save_histogram(adata, metric, xlabel, filename):
@@ -44,6 +44,18 @@ def save_histogram(adata, metric, xlabel, filename):
 
 
 def main():
+    global OUTDIR
+
+    parser = argparse.ArgumentParser(
+        description="Generate CellFlowX QC plots."
+    )
+    parser.add_argument("--input", required=True)
+    parser.add_argument("--outdir", required=True)
+    args = parser.parse_args()
+
+    INPUT = Path(args.input)
+    OUTDIR = Path(args.outdir)
+    OUTDIR.mkdir(parents=True, exist_ok=True)
 
     adata = sc.read_h5ad(INPUT)
 

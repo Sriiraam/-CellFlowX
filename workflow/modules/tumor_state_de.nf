@@ -16,7 +16,7 @@ process TUMOR_STATE_DE {
     """
     mkdir -p phase10
 
-    python ${projectDir}/scripts/tumor_state_de.py \
+    python ${params.scripts_dir}/tumor_state_de.py \
         --input "${input_h5ad}" \
         --output-dir "phase10"
     """

@@ -21,7 +21,7 @@ process QC_METRICS {
 
     script:
     """
-    python ${projectDir}/scripts/calculate_qc_metrics.py \
+    python ${params.scripts_dir}/calculate_qc_metrics.py \
         --input ${input_h5ad} \
         --output cellflowx_qc_metrics.h5ad \
         --summary qc_summary_by_sample.csv

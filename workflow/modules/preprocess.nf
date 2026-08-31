@@ -14,7 +14,7 @@ process PREPROCESS {
 
     script:
     """
-    python ${projectDir}/scripts/preprocess.py \
+    python ${params.scripts_dir}/preprocess.py \
         --input ${input_h5ad} \
         --output cellflowx_preprocessed.h5ad
     """

@@ -25,7 +25,7 @@ process FINALIZE_QC {
 
     script:
     """
-    python ${projectDir}/scripts/finalize_qc.py \
+    python ${params.scripts_dir}/finalize_qc.py \
         --input ${input_h5ad} \
         --thresholds ${thresholds} \
         --output cellflowx_qc.h5ad \

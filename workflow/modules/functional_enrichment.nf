@@ -18,7 +18,7 @@ process FUNCTIONAL_ENRICHMENT {
 
     cp ${phase10_files} phase10_input/
 
-    python ${projectDir}/scripts/functional_enrichment.py \
+    python ${params.scripts_dir}/functional_enrichment.py \
         --de-dir phase10_input \
         --output-dir phase11
     """

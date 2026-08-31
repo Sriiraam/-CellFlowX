@@ -15,7 +15,7 @@ process BUILD_ANNDATA {
 
     script:
     """
-    python ${projectDir}/scripts/validate_anndata.py \
+    python ${params.scripts_dir}/validate_anndata.py \
         --input-root ${input_root} \
         --samplesheet ${samplesheet} \
         --output cellflowx_raw_merged.h5ad

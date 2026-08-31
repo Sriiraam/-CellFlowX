@@ -29,7 +29,7 @@ process ANNOTATE_CELLS {
 
     script:
     """
-    python ${projectDir}/scripts/annotate_cells.py \
+    python ${params.scripts_dir}/annotate_cells.py \
         --input "${input_h5ad}" \
         --annotations "${annotations}" \
         --output "cellflowx_annotated.h5ad" \

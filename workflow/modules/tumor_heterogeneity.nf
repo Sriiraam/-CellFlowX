@@ -18,7 +18,7 @@ process TUMOR_HETEROGENEITY {
 
     script:
     """
-    python ${projectDir}/scripts/tumor_heterogeneity.py \
+    python ${params.scripts_dir}/tumor_heterogeneity.py \
         --input "${input_h5ad}" \
         --counts "celltype_counts_by_sample.csv" \
         --percentages "celltype_percentages_by_sample.csv" \
