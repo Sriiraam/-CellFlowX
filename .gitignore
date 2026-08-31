@@ -91,3 +91,10 @@ Thumbs.db
 # CellFlowX processed data
 data/processed/*
 !data/processed/.gitkeep
+
+# Runtime logs
+logs/*.log
+
+# Track reproducibility provenance
+!results/provenance/
+!results/provenance/**

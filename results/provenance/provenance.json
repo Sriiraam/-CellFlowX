@@ -1,0 +1,27 @@
+{
+  "timestamp_utc": "2026-08-31T10:54:31.517140+00:00",
+  "project": "CellFlowX",
+  "python_version": "3.12.3",
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "git_commit": "dc777f50353e3906f5ba53a2ffa1d67eb8ab5350",
+  "git_branch": "main",
+  "nextflow_version": "version 25.10.4 build 11173",
+  "java_version": "openjdk version \"21.0.12\" 2026-07-21",
+  "docker_version": "Docker version 29.7.2, build a7dcaa6",
+  "working_directory": "/home/sriram/CellFlowX",
+  "dataset": {
+    "geo_series": "GSE292074",
+    "bioproject": "PRJNA1236646",
+    "samples": [
+      "GSM8848584",
+      "GSM8848585",
+      "GSM8848586"
+    ]
+  },
+  "analysis": {
+    "raw_cells": 8660,
+    "qc_retained_cells": 8233,
+    "hvg_count": 2000,
+    "leiden_clusters": 15
+  }
+}
