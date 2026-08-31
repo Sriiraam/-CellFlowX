@@ -2,7 +2,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-RESULTS = PROJECT_ROOT / "results"
+RESULTS = PROJECT_ROOT / "streamlit_app" / "data" / "results"
 DATA = PROJECT_ROOT / "data"
 
 QC_DIR = RESULTS / "qc"

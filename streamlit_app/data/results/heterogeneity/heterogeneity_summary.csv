@@ -1,0 +1,4 @@
+sample,total_cells,detected_states,dominant_state,dominant_state_pct
+GSM8848584,3448,7,Steroidogenic-like,32.74
+GSM8848585,3858,11,Neuroendocrine-like,43.47
+GSM8848586,927,10,Activated fibroblast,56.09
