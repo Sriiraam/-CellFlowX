@@ -17,7 +17,7 @@ st.set_page_config(
     layout="wide",
 )
 
-BENCH = ROOT / "results" / "benchmarks"
+BENCH = ROOT / "streamlit_app" / "data" / "results" / "benchmarks"
 
 project = pd.read_csv(BENCH / "project_benchmark_summary.csv")
 processes = pd.read_csv(BENCH / "process_benchmark_summary.csv")

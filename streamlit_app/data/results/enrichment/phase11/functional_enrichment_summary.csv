@@ -1,0 +1,9 @@
+gene_set,input_genes,significant_pathways,top_pathway,top_adjusted_p
+AR_high_vs_Neuroendocrine_up_A,2685,102,Cholesterol Metabolic Process (GO:0008203),4.407530603354509e-05
+AR_high_vs_Neuroendocrine_up_B,1235,129,Nervous System Development (GO:0007399),2.584135435393073e-14
+AR_high_vs_Steroidogenic_up_A,2212,61,Protein Localization To Cell Periphery (GO:1990778),0.00014465371442573703
+AR_high_vs_Steroidogenic_up_B,2043,36,Cholesterol Metabolic Process (GO:0008203),1.4984341506923411e-09
+Luminal_vs_Neuroendocrine_up_A,2862,173,Regulation Of Cell Migration (GO:0030334),4.470718774690818e-07
+Luminal_vs_Neuroendocrine_up_B,250,100,Chemical Synaptic Transmission (GO:0007268),1.447938061346375e-12
+Neuroendocrine_vs_Steroidogenic_up_A,1738,168,Nervous System Development (GO:0007399),1.7165516551981254e-16
+Neuroendocrine_vs_Steroidogenic_up_B,2691,163,Cholesterol Metabolic Process (GO:0008203),3.292789214625456e-07

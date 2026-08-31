@@ -1,0 +1,4 @@
+sample,total_cells,low_gene_cells,high_gene_cells,high_mt_cells,removed_any,retained_cells,retained_pct
+GSM8848584,3713,192,31,42,265,3448,92.86
+GSM8848585,3988,75,39,12,126,3862,96.84
+GSM8848586,959,21,7,2,29,930,96.98

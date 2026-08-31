@@ -1,0 +1,4 @@
+sample,raw_cells,low_gene_fail,high_gene_fail,high_mt_fail,predicted_doublets,removed_total,retained_cells,retained_pct
+GSM8848584,3713,192,31,42,0,265,3448,92.86
+GSM8848585,3988,75,39,12,4,130,3858,96.74
+GSM8848586,959,21,7,2,3,32,927,96.66
