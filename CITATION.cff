@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use CellFlowX, please cite this software."
+title: "CellFlowX: Single-Cell Transcriptomic Profiling of Tumor Heterogeneity in Metastatic Prostate Cancer"
+type: software
+
+authors:
+  - family-names: "B"
+    given-names: "Sriram"
+
+version: "1.0.0"
+date-released: "2026-08-31"
+
+repository-code: "https://github.com/Sriiraam/CellFlowX"
+
+keywords:
+  - single-cell RNA-seq
+  - scRNA-seq
+  - prostate cancer
+  - tumor heterogeneity
+  - bioinformatics
+  - Nextflow
+  - Scanpy
+  - Docker
+
+license: MIT
