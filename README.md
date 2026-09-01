@@ -1,17 +1,35 @@
 # 🧬 CellFlowX
 
-[![CellFlowX CI](https://github.com/Sriiraam/CellFlowX/actions/workflows/ci.yml/badge.svg)](https://github.com/Sriiraam/CellFlowX/actions/workflows/ci.yml)
-![Python](https://img.shields.io/badge/Python-3.12-blue)
-![Nextflow](https://img.shields.io/badge/Nextflow-DSL2-23aa62)
-![Scanpy](https://img.shields.io/badge/Scanpy-scRNA--seq-blueviolet)
-![Docker](https://img.shields.io/badge/Docker-Ready-2496ED)
-![License](https://img.shields.io/badge/License-MIT-green)
+<p align="center">
+  <strong>Production-Style Single-Cell RNA-seq Pipeline for Metastatic Prostate Cancer</strong>
+</p>
 
-**CellFlowX** is a production-style, reproducible single-cell RNA-seq workflow for profiling **tumor heterogeneity in metastatic prostate cancer**.
+<p align="center">
+  <a href="https://github.com/Sriiraam/CellFlowX/actions/workflows/ci.yml">
+    <img src="https://github.com/Sriiraam/CellFlowX/actions/workflows/ci.yml/badge.svg" alt="CI">
+  </a>
+  <img src="https://img.shields.io/badge/Release-v1.0.0-success" alt="Release">
+  <img src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Nextflow-DSL2-23AA62?logo=nextflow&logoColor=white" alt="Nextflow">
+  <img src="https://img.shields.io/badge/Docker-Validated-2496ED?logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/Scanpy-scRNA--seq-8A2BE2" alt="Scanpy">
+  <img src="https://img.shields.io/badge/Streamlit-Live-FF4B4B?logo=streamlit&logoColor=white" alt="Streamlit">
+  <img src="https://img.shields.io/badge/License-MIT-yellow" alt="MIT License">
+</p>
 
-It combines single-cell transcriptomic analysis with workflow engineering using **Scanpy, AnnData, Nextflow DSL2, Docker, SQLite, pytest, GitHub Actions, and Streamlit**.
+<p align="center">
+  <a href="https://cellflowx.streamlit.app/"><strong>🌐 Live Dashboard</strong></a>
+  &nbsp;•&nbsp;
+  <a href="docs/cellflowx_workflow_dag.html"><strong>📊 Workflow DAG</strong></a>
+  &nbsp;•&nbsp;
+  <a href="https://github.com/Sriiraam/CellFlowX/releases/tag/v1.0.0"><strong>🏷️ v1.0.0 Release</strong></a>
+</p>
 
 ---
+
+**CellFlowX** is a reproducible, production-style single-cell RNA-seq workflow for profiling **cellular composition, transcriptional states, and inter-tumor heterogeneity in metastatic prostate cancer**.
+
+Built with **Nextflow DSL2 + Scanpy/AnnData + Docker + SQLite + Streamlit + GitHub Actions**.
 
 ## 🌐 Live Demo
 
@@ -27,7 +45,6 @@ Explore CellFlowX directly in your browser — no local installation required.
 
 The architecture summarizes the biological analysis, workflow orchestration, reproducibility, and deployment components of CellFlowX.
 
-📊 **[View the complete CellFlowX Nextflow DAG →](docs/cellflowx_workflow_dag.html)**
 
 ---
 
@@ -140,7 +157,6 @@ Biological Synthesis
 
 The workflow separates individual analytical stages into reusable Nextflow modules while maintaining a reproducible execution path from processed 10x matrices to biological interpretation.
 
-📊 **[View the complete CellFlowX Nextflow DAG →](docs/cellflowx_workflow_dag.html)**
 
 ---
 
